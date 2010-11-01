@@ -30,7 +30,12 @@ body {
 #playlist a.playing { background: #3B1E6C; color: white; }
 #browser a:hover, #playlist a:hover { background: #200A46; color: white; }
 #controls { margin-top: 10px; }
-#addall { cursor: pointer; background: #eee; padding: 5px; border-radius: 5px; }
+#controls a { 
+	cursor: pointer; 
+	background: #eee; 
+	padding: 5px; 
+	border-radius: 5px; 
+}
 </style>
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript">
@@ -40,6 +45,7 @@ function init() {
 	load(path);
 	$('#player').bind('ended', next);
 	$('#addall').click(addAll);
+	$('#next').click(next);
 }
 function load(path)  {
 	$.ajax({
@@ -116,7 +122,8 @@ google.setOnLoadCallback(init);
 <div id="browser"></div>
 <div id="playlist"></div>
 <div id="controls">
-<a id="addall">Add all to playlist</div>
+<a id="addall">Add all</a>
+<a id="next">Next</a>
 </div>
 </body>
 </html>
