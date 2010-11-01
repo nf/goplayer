@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<style>
+a { display: block; }
+.dir {
+}
+</style>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+var root = "/f/";
+var path = "";
+function init() {
+	load(path);
+}
+function load(path)  {
+	$.ajax({
+		url:root+path,
+		dataType:"json",
+		success: populate
+	});
+}
+function populate(files) {
+	var $b = $('#browser').empty();
+	function add(i, f) {
+		var dir = (f.Mode & 040000);
+		var cl =  dir ? "dir" : "file";
+		var $d = $('<a></a>').addClass(cl).text(f.Name).data(f);
+		$b.append($d);
+		$d.click(dir?clickDir:clickFile);
+	}
+	// TODO: sort files by name
+	$.each(files, add);
+}
+function clickDir(e) {
+	var $d = $(e.target);
+	path += $d.data().Name + "/";
+	load(path);
+}
+function clickFile(e) {
+	var $d = $(e.target);
+	var $p = $('#player');
+	var p = $p[0];
+	if (!p) return;
+	$p.attr('src', root+path+$d.data().Name).show();
+}
+google.load("jquery", "1");
+google.setOnLoadCallback(init);
+</script>
+</head>
+<body>
+<audio id="player" controls autoplay autobuffer> 
+<p>What? Your browser doesn't support &lt;audio&gt;?! Lame.</p>
+</audio>
+<div id="browser"></div>
+<div id="playlist"></div>
+</body>
+</html>
