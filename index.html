@@ -55,8 +55,10 @@ function populate(files) {
 			.click(dir?clickDir:clickFile);
 	}
 	files.sort(function(a, b) {
-		if (a.Name > b.Name) return 1;
-		if (a.Name < b.Name) return -1;
+		a = a.Name.toLowerCase();
+		b = b.Name.toLowerCase();
+		if (a > b) return 1;
+		if (a < b) return -1;
 		return 0;
 	});
 	$b.append(up());
@@ -89,6 +91,10 @@ function play(el) {
 	$('#playlist a').removeClass('playing');
 	$(el).addClass('playing')
 	$('#player').attr('src', url);
+}
+function next() {
+	var $next = $('#playlist a.playing').next();
+	if ($next.length) play($next);
 }
 google.load("jquery", "1");
 google.setOnLoadCallback(init);
