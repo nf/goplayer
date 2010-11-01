@@ -2,20 +2,44 @@
 <html>
 <head>
 <style>
-a { display: block; }
-.dir {
+body {
+	font-family: sans-serif;
 }
+#browser, #playlist {
+	border-radius: 10px;
+	padding: 5px 5px 3px 5px;
+	width: 300px;
+	float: left;
+	margin-right: 15px;
+	height: 500px;
+	overflow: auto;
+}
+#browser a, #playlist a { 
+	display: block; 
+	cursor: pointer; 
+	padding: 2px 4px; 
+	border-radius: 5px; 
+	overflow: hidden;
+	margin-bottom: 2px; 
+}
+#browser a:hover, #playlist a:hover { background: #200A46; color: white; }
+#browser { background: #8C9A20; }
+#browser a.dir { background: #BECD53; color: black; }
+#browser a.file { background: #5A640A; color: white; }
+#playlist { background: #881C46; }
+#playlist a { background: #C44F7C; }
+#playlist a.playing { background: #3B1E6C; color: white; }
 </style>
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript">
 var root = "/f/";
-var path = "";
+var path = [];
 function init() {
 	load(path);
 }
 function load(path)  {
 	$.ajax({
-		url:root+path,
+		url:root+path.join('/'),
 		dataType:"json",
 		success: populate
 	});
@@ -23,26 +47,48 @@ function load(path)  {
 function populate(files) {
 	var $b = $('#browser').empty();
 	function add(i, f) {
+		if (f.Name[0] == '.') return;
 		var dir = (f.Mode & 040000);
-		var cl =  dir ? "dir" : "file";
-		var $d = $('<a></a>').addClass(cl).text(f.Name).data(f);
-		$b.append($d);
-		$d.click(dir?clickDir:clickFile);
+		var cl = dir ? "dir" : "file";
+		$('<a></a>').text(f.Name).data('file', f)
+			.addClass(cl).appendTo($b)
+			.click(dir?clickDir:clickFile);
 	}
-	// TODO: sort files by name
+	files.sort(function(a, b) {
+		if (a.Name > b.Name) return 1;
+		if (a.Name < b.Name) return -1;
+		return 0;
+	});
+	$b.append(up());
 	$.each(files, add);
 }
+function up() {
+	return $('<a class="dir">..</a>').click(function() {
+		path.pop();
+		load(path);
+	});
+}
 function clickDir(e) {
-	var $d = $(e.target);
-	path += $d.data().Name + "/";
+	path.push($(e.target).data('file').Name);
 	load(path);
 }
 function clickFile(e) {
-	var $d = $(e.target);
-	var $p = $('#player');
-	var p = $p[0];
-	if (!p) return;
-	$p.attr('src', root+path+$d.data().Name).show();
+	addToPlaylist($(e.target).data('file'));
+}
+function addToPlaylist(f) {
+	var $p = $('#playlist');
+	var playnow = ($p.find('a').length == 0);
+	var $d = $('<a></a>').text(f.Name).data('file', f)
+		.appendTo($p)
+		.click(function(e) { play(e.target); });
+	if (playnow) $d.click();
+}
+function play(el) {
+	var name = $(el).data('file').Name;
+	var url = root+path.join('/')+'/'+name;
+	$('#playlist a').removeClass('playing');
+	$(el).addClass('playing')
+	$('#player').attr('src', url);
 }
 google.load("jquery", "1");
 google.setOnLoadCallback(init);

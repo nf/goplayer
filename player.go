@@ -24,6 +24,7 @@ func main() {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "index.html")
 }
 
 func File(w http.ResponseWriter, r *http.Request) {
