@@ -1,0 +1,8 @@
+GoPlayer, an HTML5 and Go-based music player
+
+I have a large music collection on a machine at home,
+and I want to be able to listen to that music at work.
+This is my solution to that problem.
+
+Andrew Gerrand <adg@golang.org>
+

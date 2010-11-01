@@ -22,13 +22,15 @@ body {
 	overflow: hidden;
 	margin-bottom: 2px; 
 }
-#browser a:hover, #playlist a:hover { background: #200A46; color: white; }
 #browser { background: #8C9A20; }
 #browser a.dir { background: #BECD53; color: black; }
 #browser a.file { background: #5A640A; color: white; }
 #playlist { background: #881C46; }
 #playlist a { background: #C44F7C; }
 #playlist a.playing { background: #3B1E6C; color: white; }
+#browser a:hover, #playlist a:hover { background: #200A46; color: white; }
+#controls { margin-top: 10px; }
+#addall { cursor: pointer; background: #eee; padding: 5px; border-radius: 5px; }
 </style>
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
 <script type="text/javascript">
@@ -36,6 +38,8 @@ var root = "/f/";
 var path = [];
 function init() {
 	load(path);
+	$('#player').bind('ended', next);
+	$('#addall').click(addAll);
 }
 function load(path)  {
 	$.ajax({
@@ -85,6 +89,11 @@ function addToPlaylist(f) {
 		.click(function(e) { play(e.target); });
 	if (playnow) $d.click();
 }
+function addAll() {
+	$('#browser a.file').each(function(i, e) {
+		addToPlaylist($(e).data('file'));
+	});
+}
 function play(el) {
 	var name = $(el).data('file').Name;
 	var url = root+path.join('/')+'/'+name;
@@ -106,5 +115,8 @@ google.setOnLoadCallback(init);
 </audio>
 <div id="browser"></div>
 <div id="playlist"></div>
+<div id="controls">
+<a id="addall">Add all to playlist</div>
+</div>
 </body>
 </html>

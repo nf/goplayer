@@ -3,8 +3,12 @@ package main
 import (
 	"flag"
 	"http"
+	"io"
 	"json"
 	"os"
+	"mime"
+	"path"
+	"strconv"
 )
 
 const (
@@ -38,7 +42,18 @@ func File(w http.ResponseWriter, r *http.Request) {
 		serveDirectory(fn, w, r)
 		return
 	}
-	http.ServeFile(w, r, fn)
+	f, err := os.Open(fn, os.O_RDONLY, 0)
+	if err != nil {
+		http.Error(w, err.String(), http.StatusInternalServerError)
+		return
+	}
+	t := mime.TypeByExtension(path.Ext(fn))
+	if t == "" {
+		t = "application/octet-stream"
+	}
+	w.SetHeader("Content-Type", t)
+	w.SetHeader("Content-Length", strconv.Itoa64(fi.Size))
+	io.Copy(w, f)
 }
 
 func serveDirectory(fn string, w http.ResponseWriter, r *http.Request) {
