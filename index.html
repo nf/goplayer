@@ -41,6 +41,7 @@ body {
 <script type="text/javascript">
 var root = "/f/";
 var path = [];
+var cache = {};
 function init() {
 	load(path);
 	$('#player').bind('ended', next);
@@ -48,18 +49,27 @@ function init() {
 	$('#next').click(next);
 }
 function load(path)  {
+	var url = root+path.join('/');
+	if (typeof cache[url] != "undefined") {
+		populate(cache[url]);
+		return;
+	}
 	$.ajax({
-		url:root+path.join('/'),
-		dataType:"json",
-		success: populate
+		url: url,
+		dataType: "json",
+		success: function(data) {
+			populate(data)
+			cache[url] = data;
+		}
 	});
 }
 function populate(files) {
 	var $b = $('#browser').empty();
 	function add(i, f) {
-		if (f.Name[0] == '.') return;
+		if (f.Name[0] == '.' || f.Name[0] == ':') return;
 		var dir = (f.Mode & 040000);
 		var cl = dir ? "dir" : "file";
+		f.Path = path.join('/');
 		$('<a></a>').text(f.Name).data('file', f)
 			.addClass(cl).appendTo($b)
 			.click(dir?clickDir:clickFile);
@@ -102,7 +112,8 @@ function addAll() {
 }
 function play(el) {
 	var name = $(el).data('file').Name;
-	var url = root+path.join('/')+'/'+name;
+	var path = $(el).data('file').Path;
+	var url = root+path+'/'+name;
 	$('#playlist a').removeClass('playing');
 	$(el).addClass('playing')
 	$('#player').attr('src', url);
