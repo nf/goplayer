@@ -24,7 +24,7 @@ func main() {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "index.html")
+	http.ServeFile(w, r, "./index.html")
 }
 
 func File(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +47,7 @@ func serveDirectory(fn string, w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.String(), http.StatusInternalServerError)
 		}
 	}()
-	d, err := os.Open(fn, os.O_RDONLY, 0)
+	d, err := os.Open(fn)
 	if err != nil {
 		panic(err)
 	}
@@ -60,4 +60,3 @@ func serveDirectory(fn string, w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 }
-
