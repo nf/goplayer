@@ -14,13 +14,13 @@ body {
 	height: 500px;
 	overflow: auto;
 }
-#browser a, #playlist a { 
-	display: block; 
-	cursor: pointer; 
-	padding: 2px 4px; 
-	border-radius: 5px; 
+#browser a, #playlist a {
+	display: block;
+	cursor: pointer;
+	padding: 2px 4px;
+	border-radius: 5px;
 	overflow: hidden;
-	margin-bottom: 2px; 
+	margin-bottom: 2px;
 }
 #browser { background: #8C9A20; }
 #browser a.dir { background: #BECD53; color: black; }
@@ -30,11 +30,11 @@ body {
 #playlist a.playing { background: #3B1E6C; color: white; }
 #browser a:hover, #playlist a:hover { background: #200A46; color: white; }
 #controls { margin-top: 10px; }
-#controls a { 
-	cursor: pointer; 
-	background: #eee; 
-	padding: 5px; 
-	border-radius: 5px; 
+#controls a {
+	cursor: pointer;
+	background: #eee;
+	padding: 5px;
+	border-radius: 5px;
 }
 </style>
 <script src="http://www.google.com/jsapi" type="text/javascript"></script>
@@ -67,7 +67,7 @@ function populate(files) {
 	var $b = $('#browser').empty();
 	function add(i, f) {
 		if (f.Name[0] == '.' || f.Name[0] == ':') return;
-		var dir = (f.Mode & 040000);
+    var dir = f.IsDir;
 		var cl = dir ? "dir" : "file";
 		f.Path = path.join('/');
 		$('<a></a>').text(f.Name).data('file', f)
@@ -127,7 +127,7 @@ google.setOnLoadCallback(init);
 </script>
 </head>
 <body>
-<audio id="player" controls autoplay autobuffer> 
+<audio id="player" controls autoplay autobuffer>
 <p>What? Your browser doesn't support &lt;audio&gt;?! Lame.</p>
 </audio>
 <div id="browser"></div>
