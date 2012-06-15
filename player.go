@@ -11,7 +11,7 @@ import (
 type Entry struct {
   Name string // name of the object
 	IsDir bool
-	Mode os.32FileMode
+	Mode os.FileMode
 }
 
 const (
