@@ -1,17 +1,17 @@
 package main
 
 import (
-	"flag"
-	"net/http"
 	"encoding/json"
-	"os"
+	"flag"
 	"log"
+	"net/http"
+	"os"
 )
 
 type Entry struct {
-  Name string // name of the object
+	Name  string // name of the object
 	IsDir bool
-	Mode os.FileMode
+	Mode  os.FileMode
 }
 
 const (
@@ -80,9 +80,9 @@ func serveDirectory(fn string, w http.ResponseWriter,
 		entries[k].Mode = files[k].Mode()
 	}
 
-  j := json.NewEncoder(w)
+	j := json.NewEncoder(w)
 
 	if err := j.Encode(&entries); err != nil {
-	  panic(err)
+		panic(err)
 	}
 }
