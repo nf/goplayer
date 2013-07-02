@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 type Entry struct {
@@ -36,7 +37,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func File(w http.ResponseWriter, r *http.Request) {
-	fn := *root + r.URL.Path[len(filePrefix):]
+	fn := filepath.Join(*root, r.URL.Path[len(filePrefix):])
 	fi, err := os.Stat(fn)
 	log.Print("File called: ", fn)
 
