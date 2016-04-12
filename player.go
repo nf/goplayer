@@ -63,6 +63,8 @@ func serveDirectory(fn string, w http.ResponseWriter,
 	if err != nil {
 		panic(err)
 	}
+	defer d.Close()
+
 	log.Print("serverDirectory called: ", fn)
 
 	files, err := d.Readdir(-1)
